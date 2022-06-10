@@ -1,13 +1,13 @@
 package log
 
 import (
+	"TikTokLite/config"
 	"TikTokLite/util"
-	"fmt"
-	"github.com/spf13/viper"
+	"os"
+
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
-	"os"
 )
 
 var log *zap.Logger
@@ -28,10 +28,14 @@ func InitLog() {
 		return lev >= zap.ErrorLevel
 	})
 	lowPriority := zap.LevelEnablerFunc(func(lev zapcore.Level) bool { //info和debug级别,debug级别是最低的
-		return lev < zap.ErrorLevel && lev >= zap.DebugLevel
+		if config.Config.Level == "debug" {
+			return lev < zap.ErrorLevel && lev >= zap.DebugLevel
+		} else {
+			return lev < zap.ErrorLevel && lev >= zap.InfoLevel
+		}
 	})
 	now := util.GetCurrentTimeForString()
-	path := viper.GetString("logfile")
+	path := config.GetConfig().Path.Logfile
 	//info文件writeSyncer
 	infoFileWriteSyncer := zapcore.AddSync(&lumberjack.Logger{
 		Filename:   path + "info" + now + ".log", //日志文件存放目录，
@@ -40,7 +44,6 @@ func InitLog() {
 		MaxAge:     30,                           //日志文件保留天数
 		Compress:   false,                        //是否压缩处理
 	})
-	fmt.Println(path + "info" + now + ".log")
 	infoFileCore := zapcore.NewCore(encoder, zapcore.NewMultiWriteSyncer(infoFileWriteSyncer, zapcore.AddSync(os.Stdout)), lowPriority)
 	//error文件writeSyncer
 	errorFileWriteSyncer := zapcore.AddSync(&lumberjack.Logger{

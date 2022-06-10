@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"TikTokLite/common"
 	"errors"
 
 	"github.com/jinzhu/gorm"
@@ -17,7 +18,7 @@ func (Favorite) TableName() string {
 }
 
 func LikeAction(uid, vid int64) error {
-	db := GetDB()
+	db := common.GetDB()
 	favorite := Favorite{
 		UserId:  uid,
 		VideoId: vid,
@@ -30,28 +31,46 @@ func LikeAction(uid, vid int64) error {
 	if err != nil {
 		return err
 	}
+	authorid, _ := CacheGetAuthor(vid)
+	// go func() {
+	// 	CacheChangeUserCount(uid, add, "like")
+	// 	CacheChangeUserCount(authorid, add, "liked")
+	// }()
+	go CacheChangeUserCount(uid, add, "like")
+	go CacheChangeUserCount(authorid, add, "liked")
 	return nil
 }
 
 func UnLikeAction(uid, vid int64) error {
-	db := GetDB()
+	db := common.GetDB()
 	err := db.Where("user_id = ? and video_id = ?", uid, vid).Delete(&Favorite{}).Error
 	if err != nil {
 		return err
 	}
+	authorid, _ := CacheGetAuthor(vid)
+	// go func() {
+	go CacheChangeUserCount(uid, sub, "like")
+	go CacheChangeUserCount(authorid, sub, "liked")
+	// }()
 	return nil
 }
 
 func GetFavoriteList(uid int64) ([]Video, error) {
 	var videos []Video
-	db := GetDB()
-	err := db.Preload("Author").
-		Joins("left join favorites on videos.video_id = favorites.video_id").
+	db := common.GetDB()
+	err := db.Joins("left join favorites on videos.video_id = favorites.video_id").
 		Where("favorites.user_id = ?", uid).Find(&videos).Error
 	if err == gorm.ErrRecordNotFound {
 		return []Video{}, nil
 	} else if err != nil {
 		return nil, err
+	}
+	for i, v := range videos {
+		author, err := GetUserInfo(v.AuthorId)
+		if err != nil {
+			return videos, err
+		}
+		videos[i].Author = author
 	}
 	return videos, nil
 }
