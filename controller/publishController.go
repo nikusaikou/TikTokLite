@@ -14,6 +14,8 @@ import (
 )
 
 //视频发布
+// 视频数据在请求的 data 中
+// 视频路径随机生成
 func PublishAction(ctx *gin.Context) {
 	// publishResponse := &message.DouyinPublishActionResponse{}
 	userId, _ := ctx.Get("UserId")

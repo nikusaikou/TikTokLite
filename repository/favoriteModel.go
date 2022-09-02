@@ -17,6 +17,7 @@ func (Favorite) TableName() string {
 	return "favorites"
 }
 
+// 点赞信息存入数据库，并将对应视频写入缓存。
 func LikeAction(uid, vid int64) error {
 	db := common.GetDB()
 	favorite := Favorite{
@@ -41,6 +42,7 @@ func LikeAction(uid, vid int64) error {
 	return nil
 }
 
+// 取消点赞，更新缓存
 func UnLikeAction(uid, vid int64) error {
 	db := common.GetDB()
 	err := db.Where("user_id = ? and video_id = ?", uid, vid).Delete(&Favorite{}).Error
@@ -55,6 +57,7 @@ func UnLikeAction(uid, vid int64) error {
 	return nil
 }
 
+// 取得点赞列表，使用gorm关联查询
 func GetFavoriteList(uid int64) ([]Video, error) {
 	var videos []Video
 	db := common.GetDB()

@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// gorm 与数据库交互结构体
 type Comment struct {
 	CommentId int64  `gorm:"column:comment_id; primary_key;"`
 	UserId    int64  `gorm:"column:user_id"`
@@ -16,6 +17,7 @@ type Comment struct {
 	Time      string `gorm:"column:time"`
 }
 
+// MySQL comments 表中添加对应评论，清楚redis对应视频缓存
 func CommentAdd(userId, videoId int64, comment_text string) (*Comment, error) {
 	db := common.GetDB()
 
@@ -38,6 +40,7 @@ func CommentAdd(userId, videoId int64, comment_text string) (*Comment, error) {
 	return &comment, nil
 }
 
+// 删除评论，清空redis缓存
 func CommentDelete(videoId, comment_id int64) error {
 	db := common.GetDB()
 	commentTemp := Comment{}
@@ -54,6 +57,7 @@ func CommentDelete(videoId, comment_id int64) error {
 
 }
 
+// 先从redis中读取评论，redis未命中再读mysql后把评论写入redis
 func CommentList(videoId int64) ([]Comment, error) {
 	var comments []Comment
 	db := common.GetDB()

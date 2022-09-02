@@ -9,6 +9,11 @@ import (
 )
 
 //关注操作
+/*
+userId : 自己的 id
+to_user_id : 对方的 id
+action : 1-关注，2-取关
+*/
 func RelationAction(ctx *gin.Context) {
 	//token := ctx.Query("token")
 	//tokenUserId, err := common.VerifyToken(token)

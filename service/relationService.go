@@ -2,11 +2,13 @@ package service
 
 import (
 	"TikTokLite/log"
-	"TikTokLite/proto/pkg"
+	message "TikTokLite/proto/pkg"
 	"TikTokLite/repository"
 	"errors"
 )
 
+// 关注行为
+// 参数： 对方 id， 自己 id， 关注动作标记
 func RelationAction(toUserId, tokenUserId int64, action string) error {
 	if tokenUserId == toUserId {
 		return errors.New("you can't follow yourself")
@@ -27,6 +29,9 @@ func RelationAction(toUserId, tokenUserId int64, action string) error {
 	return nil
 }
 
+// 关注列表
+// 参数 对方id 自己id
+// 读取双方的关注列表，如果存在共同关注则进行标记。
 func RelationFollowList(userId int64, tokenUserId int64) (*message.DouyinRelationFollowListResponse, error) {
 	followList, err := repository.GetFollowList(userId, "follow")
 	if err != nil {
@@ -51,6 +56,7 @@ func RelationFollowList(userId int64, tokenUserId int64) (*message.DouyinRelatio
 	return &followListResponse, nil
 }
 
+// 粉丝列表
 func RelationFollowerList(userId int64, tokenUserId int64) (*message.DouyinRelationFollowerListResponse, error) {
 	followList, err := repository.GetFollowList(userId, "follower")
 	if err != nil {

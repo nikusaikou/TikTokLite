@@ -9,7 +9,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//用户登录
+// 处理用户登录请求。
+// 取得合法的用户名和密码，交给 service 层
 func UserLogin(ctx *gin.Context) {
 	var err error
 	userName := ctx.Query("username")
@@ -27,6 +28,7 @@ func UserLogin(ctx *gin.Context) {
 	response.Success(ctx, "success", loginResponse)
 }
 
+// 处理用户注册请求
 func UserRegister(ctx *gin.Context) {
 	var err error
 	userName := ctx.Query("username")
@@ -45,7 +47,7 @@ func UserRegister(ctx *gin.Context) {
 
 }
 
-//获取用户信息
+// 获取用户信息
 func GetUserInfo(ctx *gin.Context) {
 
 	var err error

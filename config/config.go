@@ -1,7 +1,9 @@
+// 读取配置文件
 package config
 
 import (
 	"TikTokLite/util"
+
 	"github.com/spf13/viper"
 )
 

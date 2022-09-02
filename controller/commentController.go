@@ -46,7 +46,7 @@ func CommentAction(ctx *gin.Context) {
 	response.Success(ctx, "success", commentResponse)
 }
 
-//获取评论列表
+// 获取评论列表
 func GetCommentList(ctx *gin.Context) {
 	var err error
 	video_id := ctx.Query("video_id")

@@ -6,6 +6,8 @@ import (
 	"TikTokLite/repository"
 )
 
+// 评论行为调用repository层，存储评论数据。从repository取得信息封装返回响应
+// action 1-添加评论 2-删除评论
 func CommentAction(commentId, videoId, userId int64, comment_text, actionType string) (*message.DouyinCommentActionResponse, error) {
 
 	if actionType == "1" {
@@ -39,7 +41,7 @@ func CommentAction(commentId, videoId, userId int64, comment_text, actionType st
 
 }
 
-//用户评论
+// 读取视频评论列表，封装响应数据
 func CommentList(videoId int64) (*message.DouyinCommentListResponse, error) {
 	comments, err := repository.CommentList(videoId)
 	if err != nil {

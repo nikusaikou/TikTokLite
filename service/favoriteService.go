@@ -6,6 +6,7 @@ import (
 	"TikTokLite/repository"
 )
 
+// 点赞行为，用户与视频对应，存入数据库
 func FavoriteAction(uid, vid int64, action int8) error {
 	if action == 1 {
 		log.Infof("like action uid:%v,vid:%v", uid, vid)
@@ -23,6 +24,7 @@ func FavoriteAction(uid, vid int64, action int8) error {
 	return nil
 }
 
+// 点赞列表，返回一个视频列表
 func FavoriteList(tokenUid, uid int64) (*message.DouyinFavoriteListResponse, error) {
 	favList, err := repository.GetFavoriteList(uid)
 	if err != nil {
@@ -37,6 +39,7 @@ func FavoriteList(tokenUid, uid int64) (*message.DouyinFavoriteListResponse, err
 	return &favListResponse, nil
 }
 
+// 取得当前用户自己的点赞视频数据。
 func tokenFavList(tokenUserId int64) (map[int64]struct{}, error) {
 	m := make(map[int64]struct{})
 	list, err := repository.GetFavoriteList(tokenUserId)

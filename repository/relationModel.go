@@ -25,6 +25,7 @@ func (Relation) TableName() string {
 	return "relations"
 }
 
+// 关注行为，先判断是否已经关注过该用户，后插入数据库更新缓存
 func FollowAction(userId, toUserId int64) error {
 	db := common.GetDB()
 	relation := Relation{
@@ -44,6 +45,7 @@ func FollowAction(userId, toUserId int64) error {
 	return nil
 }
 
+// 取消关注，删除数据库信息，更新缓存。
 func UnFollowAction(userId, toUserId int64) error {
 	db := common.GetDB()
 	err := db.Where("follow_id = ? and follower_id = ?", userId, toUserId).Delete(&Relation{}).Error
@@ -56,6 +58,7 @@ func UnFollowAction(userId, toUserId int64) error {
 	return nil
 }
 
+// 取得关注列表
 func GetFollowList(userId int64, usertype string) ([]User, error) {
 	db := common.GetDB()
 	re := []Relation{}
@@ -82,6 +85,7 @@ func GetFollowList(userId int64, usertype string) ([]User, error) {
 	return list, nil
 }
 
+// redis 更新缓存
 func CacheChangeUserCount(userid, op int64, ftype string) {
 	uid := strconv.FormatInt(userid, 10)
 	mutex, _ := common.GetLock("user_" + uid)

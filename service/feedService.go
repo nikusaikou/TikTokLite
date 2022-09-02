@@ -1,11 +1,14 @@
 package service
 
 import (
-	"TikTokLite/proto/pkg"
+	message "TikTokLite/proto/pkg"
 	"TikTokLite/repository"
 	"TikTokLite/util"
 )
 
+// 参数： 时间戳， 当前用户 id
+// 返回 feed 响应结构
+// 按照当前时间从数据库读取视频列表，封装进 feed 响应结构，更新时间戳
 func GetFeedList(currentTime, tokenUserId int64) (*message.DouyinFeedResponse, error) {
 	videoList, err := repository.GetVideoListByFeed(currentTime)
 	if err != nil {
@@ -23,6 +26,7 @@ func GetFeedList(currentTime, tokenUserId int64) (*message.DouyinFeedResponse, e
 	return feed, nil
 }
 
+// 该函数用于打包视频响应结构体，去数据库取得视频信息，封装在视频 protobuf 的 video 结构内
 func VideoList(videoList []repository.Video, userId int64) []*message.Video {
 	var err error
 	FollowList := make(map[int64]struct{})

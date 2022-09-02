@@ -9,6 +9,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// 用户注册
+// 注册行为合法则存入数据库，返回 token
 func UserRegister(userName, password string) (*message.DouyinUserRegisterResponse, error) {
 	err := repository.UserNameIsExist(userName)
 	if err != nil {
@@ -29,6 +31,7 @@ func UserRegister(userName, password string) (*message.DouyinUserRegisterRespons
 	return registResponse, nil
 }
 
+// 用户登录，验证密码，生成token
 func UserLogin(userName, password string) (*message.DouyinUserLoginResponse, error) {
 	info, err := repository.GetUserInfo(userName)
 	if err != nil {
@@ -60,6 +63,7 @@ func UserInfo(userID int64) (*message.DouyinUserResponse, error) {
 	return &message.DouyinUserResponse{User: user}, nil
 }
 
+// 将数据库结构体装换为 protobuf 结构体返回。
 func messageUserInfo(info repository.User) *message.User {
 	return &message.User{
 		Id:              info.Id,

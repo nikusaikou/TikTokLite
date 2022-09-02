@@ -10,7 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//视频流
+// 视频流
+// 通过 get 请求中传递时间戳记录更新视频流
 func Feed(ctx *gin.Context) {
 	var userId int64
 	currentTime, err := strconv.ParseInt(ctx.Query("latest_time"), 10, 64)

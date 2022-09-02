@@ -1,3 +1,6 @@
+// 通用函数
+//
+// 实现用户鉴权，redis缓存，数据库初始化
 package common
 
 import (

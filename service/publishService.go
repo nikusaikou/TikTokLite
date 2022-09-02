@@ -12,6 +12,9 @@ import (
 	"strings"
 )
 
+// 发布视频
+// 参数： 用户id 文件名 视频标题
+// 返回发布视频响应
 func PublishVideo(userId int64, saveFile, title string) (*message.DouyinPublishActionResponse, error) {
 	client := minioStore.GetMinio()
 	videourl, err := client.UploadFile("video", saveFile, strconv.FormatInt(userId, 10))
@@ -38,6 +41,7 @@ func PublishVideo(userId int64, saveFile, title string) (*message.DouyinPublishA
 	return &message.DouyinPublishActionResponse{}, nil
 }
 
+// 发布视频列表
 func PublishList(tokenUserId, userId int64) (*message.DouyinPublishListResponse, error) {
 	videos, err := repository.GetVideoList(userId)
 	if err != nil {
@@ -50,6 +54,7 @@ func PublishList(tokenUserId, userId int64) (*message.DouyinPublishListResponse,
 	return list, nil
 }
 
+// 视屏 FFmpeg 截取视频封面
 func GetImageFile(videoPath string) (string, error) {
 	temp := strings.Split(videoPath, "/")
 	videoName := temp[len(temp)-1]

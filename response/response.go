@@ -1,9 +1,13 @@
+// 用于封装响应信息。
+// 具体为状态码与状态信息。
+
 package response
 
 import (
 	"TikTokLite/log"
-	"github.com/gin-gonic/gin"
 	"reflect"
+
+	"github.com/gin-gonic/gin"
 )
 
 const (
